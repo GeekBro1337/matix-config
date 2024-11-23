@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Coordinates</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 2px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="imageCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('imageCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Загружаем изображение
+        const image = new Image();
+        image.src = "source/Parking_red.png"; // Замените на свою картинку
+        image.onload = () => {
+            // Устанавливаем размеры холста под изображение
+            canvas.width = image.width;
+            canvas.height = image.height;
+
+            // Рисуем изображение на холсте
+            ctx.drawImage(image, 0, 0);
+        };
+
+        // Функция для обработки кликов
+        canvas.addEventListener('click', (event) => {
+            // Получаем размеры холста
+            const rect = canvas.getBoundingClientRect();
+
+            // Вычисляем координаты клика относительно холста
+            const x = Math.round(event.clientX - rect.left);
+            const y = Math.round(event.clientY - rect.top);
+
+            // Выводим координаты в консоль
+            console.log(`Coordinates: X = ${x}, Y = ${y}`);
+        });
+    </script>
+</body>
+</html>
