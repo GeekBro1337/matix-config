@@ -31,13 +31,20 @@ document.getElementById("toggleModeButton").addEventListener("click", toggleMode
 
 // Функция для рисования матрицы
 function drawMatrix() {
-    const topLeft = parsePoint(document.getElementById("pointTopLeft").value);
-    const bottomRight = parsePoint(document.getElementById("pointBottomRight").value);
+    const topLeft = {
+        x: parseInt(document.getElementById("pointTopLeftX").value, 10),
+        y: parseInt(document.getElementById("pointTopLeftY").value, 10)
+    };
+    const bottomRight = {
+        x: parseInt(document.getElementById("pointBottomRightX").value, 10),
+        y: parseInt(document.getElementById("pointBottomRightY").value, 10)
+    };
 
     const rows = parseInt(document.getElementById("matrixRows").value, 10);
     const cols = parseInt(document.getElementById("matrixCols").value, 10);
 
-    if (!topLeft || !bottomRight || isNaN(rows) || isNaN(cols) || rows <= 0 || cols <= 0) {
+    if (isNaN(topLeft.x) || isNaN(topLeft.y) || isNaN(bottomRight.x) || isNaN(bottomRight.y) || 
+        isNaN(rows) || isNaN(cols) || rows <= 0 || cols <= 0) {
         alert("Please enter valid points and dimensions.");
         return;
     }
