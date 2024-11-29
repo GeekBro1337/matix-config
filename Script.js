@@ -1,8 +1,42 @@
+window.onload = function () {
+    alert("LOADED!");
+};
+
 const canvas = document.getElementById("matrixCanvas");
 const ctx = canvas.getContext("2d");
 let image = null;
 let matrixPoints = [];
-let paintingMode = false; // Начинаем в режиме поиска координат
+let paintingMode = false;
+
+// Устанавливаем размеры канваса по родителю
+function resizeCanvas() {
+    const parent = canvas.parentElement;
+    canvas.width = parent.clientWidth;
+    canvas.height = parent.clientHeight;
+}
+
+// Масштабируем изображение под размеры канваса
+function scaleImageToCanvas(img, canvas) {
+    const canvasRatio = canvas.width / canvas.height;
+    const imageRatio = img.width / img.height;
+
+    let scaledWidth, scaledHeight;
+
+    if (imageRatio > canvasRatio) {
+        // Изображение шире, чем канвас
+        scaledWidth = canvas.width;
+        scaledHeight = canvas.width / imageRatio;
+    } else {
+        // Изображение выше, чем канвас
+        scaledWidth = canvas.height * imageRatio;
+        scaledHeight = canvas.height;
+    }
+
+    const offsetX = (canvas.width - scaledWidth) / 2;
+    const offsetY = (canvas.height - scaledHeight) / 2;
+
+    ctx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
+}
 
 // Загрузка изображения
 document.getElementById("imageUpload").addEventListener("change", (event) => {
@@ -10,14 +44,20 @@ document.getElementById("imageUpload").addEventListener("change", (event) => {
     if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-            image = new Image();
-            image.src = reader.result;
-            image.onload = () => {
-                // Устанавливаем размеры канваса в зависимости от изображения
-                canvas.width = image.width;
-                canvas.height = image.height;
-                ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-            };
+            try {
+                image = new Image();
+                image.src = reader.result;
+                image.onload = () => {
+                    resizeCanvas(); // Устанавливаем размеры канваса
+                    scaleImageToCanvas(image, canvas); // Масштабируем изображение
+                };
+            } catch (error) {
+                console.error("Ошибка загрузки изображения:", error);
+                alert("Не удалось загрузить изображение.");
+            }
+        };
+        reader.onerror = () => {
+            alert("Ошибка чтения файла.");
         };
         reader.readAsDataURL(file);
     }
@@ -26,25 +66,29 @@ document.getElementById("imageUpload").addEventListener("change", (event) => {
 // Обработчик кнопки "Draw Matrix"
 document.getElementById("drawMatrixButton").addEventListener("click", drawMatrix);
 
-// Обработчик кнопки переключения режима
-document.getElementById("toggleModeButton").addEventListener("click", toggleMode);
-
 // Функция для рисования матрицы
 function drawMatrix() {
     const topLeft = {
         x: parseInt(document.getElementById("pointTopLeftX").value, 10),
-        y: parseInt(document.getElementById("pointTopLeftY").value, 10)
+        y: parseInt(document.getElementById("pointTopLeftY").value, 10),
     };
     const bottomRight = {
         x: parseInt(document.getElementById("pointBottomRightX").value, 10),
-        y: parseInt(document.getElementById("pointBottomRightY").value, 10)
+        y: parseInt(document.getElementById("pointBottomRightY").value, 10),
     };
-
     const rows = parseInt(document.getElementById("matrixRows").value, 10);
     const cols = parseInt(document.getElementById("matrixCols").value, 10);
 
-    if (isNaN(topLeft.x) || isNaN(topLeft.y) || isNaN(bottomRight.x) || isNaN(bottomRight.y) || 
-        isNaN(rows) || isNaN(cols) || rows <= 0 || cols <= 0) {
+    if (
+        isNaN(topLeft.x) ||
+        isNaN(topLeft.y) ||
+        isNaN(bottomRight.x) ||
+        isNaN(bottomRight.y) ||
+        isNaN(rows) ||
+        isNaN(cols) ||
+        rows <= 0 ||
+        cols <= 0
+    ) {
         alert("Please enter valid points and dimensions.");
         return;
     }
@@ -54,14 +98,14 @@ function drawMatrix() {
 
     // Рисуем изображение на холсте
     if (image) {
-        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        scaleImageToCanvas(image, canvas);
     }
 
     matrixPoints = calculateMatrixPoints(topLeft, bottomRight, rows, cols);
     drawGrid(matrixPoints, rows, cols);
 }
 
-// Функция для расчёта точек матрицы
+// Функция для расчета точек матрицы
 function calculateMatrixPoints(topLeft, bottomRight, rows, cols) {
     const points = [];
     const dx = (bottomRight.x - topLeft.x) / cols;
@@ -103,20 +147,7 @@ function drawGrid(matrixPoints, rows, cols) {
     }
 }
 
-// Функция для переключения режима
-function toggleMode() {
-    paintingMode = !paintingMode;
-    const button = document.getElementById("toggleModeButton");
-    button.textContent = paintingMode ? "Switch to Coordinate Mode" : "Switch to Paint Mode";
-}
-
-// Функция для парсинга ввода координат
-function parsePoint(value) {
-    const match = value.match(/X:\s*(\d+),\s*Y:\s*(\d+)/);
-    return match ? { x: parseInt(match[1], 10), y: parseInt(match[2], 10) } : null;
-}
-
-// Функция для отображения координат при клике
+// Обработка кликов на канвасе для отображения координат или покраски
 canvas.addEventListener("click", (event) => {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -152,3 +183,10 @@ function paintCell(x, y, color) {
         }
     }
 }
+
+// Обработчик переключения режима
+document.getElementById("toggleModeButton").addEventListener("click", () => {
+    paintingMode = !paintingMode;
+    const button = document.getElementById("toggleModeButton");
+    button.textContent = paintingMode ? "Switch to Coordinate Mode" : "Switch to Paint Mode";
+});
