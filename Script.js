@@ -48,7 +48,6 @@ function scaleImageToCanvas(img, canvas) {
     ctx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight); // Рисуем изображение
 }
 
-// Добавление событий после загрузки DOM
 document.addEventListener("DOMContentLoaded", () => {
     canvas = document.getElementById("matrixCanvas");
     ctx = canvas.getContext("2d");
@@ -109,39 +108,32 @@ function handleImageUpload(event) {
 // Функция для кликов по канвасу
 function handleCanvasClick(event) {
     const rect = canvas.getBoundingClientRect();
-    const x = Math.round(event.clientX - rect.left); // Рассчитываем X
-    const y = Math.round(event.clientY - rect.top); // Рассчитываем Y
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
 
-    const coordText = `X: ${x}, Y: ${y}`; // Формат отображения координат
+    if (paintingMode) {
+        const color = document.getElementById("colorPicker").value;
+        paintCell(x, y, color);
+    } else {
+        const coordDisplay = document.getElementById("coordinates");
+        const coordText = `X: ${Math.round(x)}, Y: ${Math.round(y)}`;
+        coordDisplay.textContent = coordText;
 
-    const coordDisplay = document.getElementById("coordinates");
-    coordDisplay.textContent = coordText; // Показываем координаты на экране
-
-    // Копирование в буфер обмена
-    navigator.clipboard.writeText(coordText).then(() => {
-        coordDisplay.textContent = `${coordText} (Copied!)`;
-    });
-
-    // Определяем активное поле ввода
-    const activeElement = document.activeElement;
-    if (activeElement && activeElement.tagName === "INPUT") {
-        // Если активное поле для X
-        if (activeElement.id.includes("X")) {
-            activeElement.value = x;
-        }
-        // Если активное поле для Y
-        else if (activeElement.id.includes("Y")) {
-            activeElement.value = y;
+        // Проверка координат с использованием регулярки
+        if (COORDINATE_REGEX.test(coordText)) {
+            navigator.clipboard.writeText(coordText)
+                .then(() => {
+                    coordDisplay.textContent = `${coordText} (Copied!)`;
+                });
+        } else {
+            console.error("Координаты не соответствуют формату.");
         }
     }
 }
-
 
 
 // Функция для рисования матрицы
 function drawMatrix() {
-    fillEmptyInputs(); // Заполняем пустые поля значениями из placeholder
-
     const topLeft = {
         x: parseInt(document.getElementById("pointTopLeftX").value, 10),
         y: parseInt(document.getElementById("pointTopLeftY").value, 10),
@@ -178,47 +170,6 @@ function drawMatrix() {
     matrixPoints = calculateMatrixPoints(topLeft, bottomRight, rows, cols);
     drawGrid(matrixPoints, rows, cols);
 }
-
-function drawMatrix() {
-    fillEmptyInputs(); // Заполняем пустые поля значениями из placeholder
-
-    const topLeft = {
-        x: parseInt(document.getElementById("pointTopLeftX").value, 10),
-        y: parseInt(document.getElementById("pointTopLeftY").value, 10),
-    };
-    const bottomRight = {
-        x: parseInt(document.getElementById("pointBottomRightX").value, 10),
-        y: parseInt(document.getElementById("pointBottomRightY").value, 10),
-    };
-    const rows = parseInt(document.getElementById("matrixRows").value, 10);
-    const cols = parseInt(document.getElementById("matrixCols").value, 10);
-
-    if (
-        isNaN(topLeft.x) ||
-        isNaN(topLeft.y) ||
-        isNaN(bottomRight.x) ||
-        isNaN(bottomRight.y) ||
-        isNaN(rows) ||
-        isNaN(cols) ||
-        rows <= 0 ||
-        cols <= 0
-    ) {
-        alert("Please enter valid points and dimensions.");
-        return;
-    }
-
-    // Очищаем холст перед рисованием
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Рисуем изображение на холсте
-    if (image) {
-        scaleImageToCanvas(image, canvas);
-    }
-
-    matrixPoints = calculateMatrixPoints(topLeft, bottomRight, rows, cols);
-    drawGrid(matrixPoints, rows, cols);
-}
-
 
 // Функция для расчета точек матрицы
 function calculateMatrixPoints(topLeft, bottomRight, rows, cols) {
@@ -290,12 +241,10 @@ function toggleMode() {
 window.addEventListener("resize", () => {
     // Обновляем размеры канваса
     resizeCanvas();
-
     // Если есть загруженное изображение, перерисовываем его
     if (image) {
         scaleImageToCanvas(image, canvas);
     }
-
     // Если матрица была нарисована, перерисовываем её
     if (matrixPoints.length > 0) {
         drawGrid(matrixPoints, matrixPoints.length - 1, matrixPoints[0].length - 1);
