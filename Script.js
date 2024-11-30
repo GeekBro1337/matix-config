@@ -7,10 +7,11 @@ let paintingMode = false;
 
 // Установка размеров канваса по родителю
 function resizeCanvas() {
-    const parent = canvas.parentElement;
-    canvas.width = parent.clientWidth;
-    canvas.height = parent.clientHeight;
+    const parent = canvas.parentElement; // Родительский элемент
+    canvas.width = parent.clientWidth;  // Ширина канваса = ширина родителя
+    canvas.height = parent.clientHeight; // Высота канваса = высота родителя
 }
+
 
 // Добавление событий после загрузки DOM
 document.addEventListener("DOMContentLoaded", () => {
@@ -36,6 +37,7 @@ function setupEventListeners() {
     canvas.addEventListener("click", handleCanvasClick);
 }
 
+
 // Обработчик загрузки изображения
 function handleImageUpload(event) {
     const file = event.target.files[0];
@@ -46,8 +48,8 @@ function handleImageUpload(event) {
                 image = new Image();
                 image.src = reader.result;
                 image.onload = () => {
-                    resizeCanvas(); // Устанавливаем размеры канваса
-                    scaleImageToCanvas(image, canvas); // Масштабируем изображение
+                    resizeCanvas(); // Устанавливаем размеры канваса по родительскому элементу
+                    scaleImageToCanvas(image, canvas); // Масштабируем изображение под канвас
                 };
             } catch (error) {
                 console.error("Ошибка загрузки изображения:", error);
@@ -61,26 +63,31 @@ function handleImageUpload(event) {
     }
 }
 
+
 // Масштабируем изображение под размеры канваса
 function scaleImageToCanvas(img, canvas) {
-    const canvasRatio = canvas.width / canvas.height;
-    const imageRatio = img.width / img.height;
+    const canvasRatio = canvas.width / canvas.height; // Соотношение сторон канваса
+    const imageRatio = img.width / img.height; // Соотношение сторон изображения
 
     let scaledWidth, scaledHeight;
 
     if (imageRatio > canvasRatio) {
+        // Изображение шире, чем канвас
         scaledWidth = canvas.width;
         scaledHeight = canvas.width / imageRatio;
     } else {
+        // Изображение выше, чем канвас
         scaledWidth = canvas.height * imageRatio;
         scaledHeight = canvas.height;
     }
 
-    const offsetX = (canvas.width - scaledWidth) / 2;
-    const offsetY = (canvas.height - scaledHeight) / 2;
+    const offsetX = (canvas.width - scaledWidth) / 2; // Центрируем изображение по X
+    const offsetY = (canvas.height - scaledHeight) / 2; // Центрируем изображение по Y
 
-    ctx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Очищаем канвас
+    ctx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight); // Рисуем изображение
 }
+
 
 // Обработчик кликов на канвасе для отображения координат или покраски
 function handleCanvasClick(event) {
