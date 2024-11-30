@@ -226,3 +226,18 @@ function toggleMode() {
 
 
 
+// Обработчик изменения размеров окна
+window.addEventListener("resize", () => {
+    // Обновляем размеры канваса
+    resizeCanvas();
+
+    // Если есть загруженное изображение, перерисовываем его
+    if (image) {
+        scaleImageToCanvas(image, canvas);
+    }
+
+    // Если матрица была нарисована, перерисовываем её
+    if (matrixPoints.length > 0) {
+        drawGrid(matrixPoints, matrixPoints.length - 1, matrixPoints[0].length - 1);
+    }
+});
