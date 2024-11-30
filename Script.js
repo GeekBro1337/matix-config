@@ -1,3 +1,17 @@
+// Регулярное выражение для проверки или парсинга координат формата "X: число, Y: число"
+const COORDINATE_REGEX = /X:\s*(\d+),\s*Y:\s*(\d+)/;
+// Примеры валидных значений:
+// "X: 50, Y: 100" - соответствует
+// "X:123, Y:456" - соответствует
+// "X: 10 ,Y: 20 " - соответствует
+// "X: , Y:" - не соответствует (нет чисел)
+
+function parsePoint(value) {
+    const match = value.match(COORDINATE_REGEX); // Используем регулярку из переменной
+    return match ? { x: parseInt(match[1], 10), y: parseInt(match[2], 10) } : null;
+}
+
+
 // Глобальные переменные
 let canvas = null;
 let ctx = null;
@@ -12,17 +26,35 @@ function resizeCanvas() {
     canvas.height = parent.clientHeight; // Высота канваса = высота родителя
 }
 
+// Масштабируем изображение под размеры канваса
+function scaleImageToCanvas(img, canvas) {
+    const canvasRatio = canvas.width / canvas.height; // Соотношение сторон канваса
+    const imageRatio = img.width / img.height; // Соотношение сторон изображения
+
+    let scaledWidth, scaledHeight;
+
+    if (imageRatio > canvasRatio) {
+        scaledWidth = canvas.width; // Подгоняем ширину под канвас
+        scaledHeight = canvas.width / imageRatio; // Высота пропорциональна
+    } else {
+        scaledWidth = canvas.height * imageRatio; // Ширина пропорциональна
+        scaledHeight = canvas.height; // Подгоняем высоту под канвас
+    }
+
+    const offsetX = (canvas.width - scaledWidth) / 2; // Центрируем по X
+    const offsetY = (canvas.height - scaledHeight) / 2; // Центрируем по Y
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Очищаем холст
+    ctx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight); // Рисуем изображение
+}
 
 // Добавление событий после загрузки DOM
 document.addEventListener("DOMContentLoaded", () => {
     canvas = document.getElementById("matrixCanvas");
     ctx = canvas.getContext("2d");
 
-    // Установка размеров канваса
-    resizeCanvas();
-
-    // Установка обработчиков событий
-    setupEventListeners();
+    resizeCanvas(); // Устанавливаем размеры канваса
+    setupEventListeners(); // Привязываем обработчики событий
 });
 
 window.onload = function () {
@@ -36,7 +68,6 @@ function setupEventListeners() {
     document.getElementById("toggleModeButton").addEventListener("click", toggleMode);
     canvas.addEventListener("click", handleCanvasClick);
 }
-
 
 // Обработчик загрузки изображения
 function handleImageUpload(event) {
@@ -63,33 +94,7 @@ function handleImageUpload(event) {
     }
 }
 
-
-// Масштабируем изображение под размеры канваса
-function scaleImageToCanvas(img, canvas) {
-    const canvasRatio = canvas.width / canvas.height; // Соотношение сторон канваса
-    const imageRatio = img.width / img.height; // Соотношение сторон изображения
-
-    let scaledWidth, scaledHeight;
-
-    if (imageRatio > canvasRatio) {
-        // Изображение шире, чем канвас
-        scaledWidth = canvas.width;
-        scaledHeight = canvas.width / imageRatio;
-    } else {
-        // Изображение выше, чем канвас
-        scaledWidth = canvas.height * imageRatio;
-        scaledHeight = canvas.height;
-    }
-
-    const offsetX = (canvas.width - scaledWidth) / 2; // Центрируем изображение по X
-    const offsetY = (canvas.height - scaledHeight) / 2; // Центрируем изображение по Y
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Очищаем канвас
-    ctx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight); // Рисуем изображение
-}
-
-
-// Обработчик кликов на канвасе для отображения координат или покраски
+// Функция для кликов по канвасу
 function handleCanvasClick(event) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -103,12 +108,18 @@ function handleCanvasClick(event) {
         const coordText = `X: ${Math.round(x)}, Y: ${Math.round(y)}`;
         coordDisplay.textContent = coordText;
 
-        navigator.clipboard.writeText(coordText)
-            .then(() => {
-                coordDisplay.textContent = `${coordText} (Copied!)`;
-            });
+        // Проверка координат с использованием регулярки
+        if (COORDINATE_REGEX.test(coordText)) {
+            navigator.clipboard.writeText(coordText)
+                .then(() => {
+                    coordDisplay.textContent = `${coordText} (Copied!)`;
+                });
+        } else {
+            console.error("Координаты не соответствуют формату.");
+        }
     }
 }
+
 
 // Функция для рисования матрицы
 function drawMatrix() {
