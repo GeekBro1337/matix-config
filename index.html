@@ -28,7 +28,11 @@
         <button id="drawMatrixButton">Draw Matrix</button>
 
         <label for="colorPicker">Cell Color:</label>
-        <input type="color" id="colorPicker" value="#ff0000">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="color" id="colorPicker" value="#ff0000">
+            <div id="colorPreview" style="width: 20px; height: 20px; border: 1px solid #ccc; border-radius: 4px;"></div>
+        </div>
+        
         
         <button id="toggleModeButton">Switch to Paint Mode</button>
     </div>
