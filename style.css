@@ -1,10 +1,12 @@
+/* Глобальные стили для body */
 body {
     margin: 0;
     padding: 0;
     display: flex;
-    height: 100dvh; /* Используем dvh вместо vh */
+    height: 100dvh; /* Используем dvh вместо vh для корректного отображения на мобильных устройствах */
 }
 
+/* Панель настроек */
 #settingsPanel {
     width: 300px;
     padding: 10px;
@@ -13,41 +15,54 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    height: 100%;
-    box-sizing: border-box; /* Добавляем для точного расчета ширины */
+    height: 100%; /* Занимаем всю высоту родителя */
+    box-sizing: border-box; /* Для точного расчета ширины и высоты */
 }
+
 #settingsPanel label {
     font-size: 14px;
-    margin-bottom: 5px;
+    margin-bottom: 5px; /* Отступ под заголовком */
 }
-#settingsPanel input, #settingsPanel button, #settingsPanel select {
+
+#settingsPanel input,
+#settingsPanel button,
+#settingsPanel select {
     width: 100%;
     padding: 8px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Добавляем для точного расчета ширины */
+    box-sizing: border-box; /* Для точного расчета размеров */
 }
+
 #settingsPanel button {
     background-color: #007bff;
     color: white;
     cursor: pointer;
-    margin-top: 10px; /* Отступ сверху, чтобы кнопка не была прижата к полям ввода */
+    margin-top: 10px; /* Отступ сверху */
+    transition: background-color 0.3s ease; /* Плавный переход при наведении */
 }
+
 #settingsPanel button:hover {
     background-color: #0056b3;
 }
+
+/* Контейнер для канваса */
 #canvasContainer {
     flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
+    overflow: hidden; /* Убираем скроллбары, если содержимое канваса выходит за пределы */
 }
+
 canvas {
     border: 2px solid #333;
     border-radius: 10px;
 }
+
+/* Отображение координат */
 #coordinates {
     position: absolute;
     top: 10px;
@@ -58,7 +73,34 @@ canvas {
     font-size: 14px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease; /* Плавный переход при наведении */
 }
+
 #coordinates:hover {
     background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Кнопки JSON */
+#jsonButtons button {
+    padding: 8px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    transition: background-color 0.3s ease; /* Плавный переход при наведении */
+}
+
+#jsonButtons button img {
+    width: 24px;
+    height: 24px;
+    pointer-events: none; /* Иконка не должна обрабатывать события клика */
+}
+
+#jsonButtons button:hover {
+    background-color: #0056b3;
 }

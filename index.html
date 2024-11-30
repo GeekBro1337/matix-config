@@ -8,34 +8,52 @@
 </head>
 <body>
     <div id="settingsPanel">
+        <!-- Кнопки импорта и экспорта JSON -->
+        <div id="jsonButtons" style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <button id="importJsonButton" aria-label="Import JSON">
+                <img src="source/icons/import.png" alt="Import JSON" style="width: 24px; height: 24px;">
+            </button>
+            <button id="exportJsonButton" aria-label="Export JSON">
+                <img src="source/icons/export.png" alt="Export JSON" style="width: 24px; height: 24px;">
+            </button>
+        </div>
+
+        <!-- Загрузка изображения -->
         <label for="imageUpload">Upload Image:</label>
         <input type="file" id="imageUpload" accept="image/png, image/gif, image/jpeg">
 
+        <!-- Координаты верхнего левого угла -->
         <label>Top-Left Point:</label>
         <input type="number" id="pointTopLeftX" placeholder="X (e.g., 50)">
         <input type="number" id="pointTopLeftY" placeholder="Y (e.g., 50)">
 
+        <!-- Координаты нижнего правого угла -->
         <label>Bottom-Right Point:</label>
         <input type="number" id="pointBottomRightX" placeholder="X (e.g., 200)">
         <input type="number" id="pointBottomRightY" placeholder="Y (e.g., 200)">
 
+        <!-- Настройка матрицы -->
         <label for="matrixRows">Number of Rows:</label>
         <input type="number" id="matrixRows" placeholder="5">
 
         <label for="matrixCols">Number of Columns:</label>
         <input type="number" id="matrixCols" placeholder="5">
 
+        <!-- Кнопка для рисования матрицы -->
         <button id="drawMatrixButton">Draw Matrix</button>
 
+        <!-- Выбор цвета ячейки -->
         <label for="colorPicker">Cell Color:</label>
         <div style="display: flex; align-items: center; gap: 10px;">
             <input type="color" id="colorPicker" value="#ff0000">
             <div id="colorPreview" style="width: 20px; height: 20px; border: 1px solid #ccc; border-radius: 4px;"></div>
         </div>
-        
-        
+
+        <!-- Переключение режима -->
         <button id="toggleModeButton">Switch to Paint Mode</button>
     </div>
+
+    <!-- Контейнер для канваса -->
     <div id="canvasContainer">
         <canvas id="matrixCanvas"></canvas>
         <div id="coordinates">X: 0, Y: 0</div>
