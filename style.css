@@ -1,83 +1,54 @@
-/* Глобальные стили для body */
+/* Сброс стилей для body */
 body {
     margin: 0;
     padding: 0;
     display: flex;
-    height: 100dvh; /* Используем dvh вместо vh для корректного отображения на мобильных устройствах */
+    height: 100vh; /* Высота окна браузера */
+    font-family: Arial, sans-serif;
+    color: #333;
 }
 
 /* Панель настроек */
 #settingsPanel {
     width: 300px;
-    padding: 10px;
-    background-color: #ffffff;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     gap: 15px;
-    height: 100%; /* Занимаем всю высоту родителя */
-    box-sizing: border-box; /* Для точного расчета ширины и высоты */
+    height: 100%; /* Полная высота окна браузера */
+    box-sizing: border-box; /* Учитываем padding в высоте */
+    overflow-y: auto; /* Скролл, если контент выходит за пределы */
 }
 
+/* Заголовки и текстовые метки */
 #settingsPanel label {
     font-size: 14px;
-    margin-bottom: 5px; /* Отступ под заголовком */
+    margin-bottom: 5px;
 }
 
+/* Поля ввода */
 #settingsPanel input,
-#settingsPanel button,
-#settingsPanel select {
+#settingsPanel button {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Для точного расчета размеров */
+    box-sizing: border-box;
 }
 
+/* Кнопки */
 #settingsPanel button {
     background-color: #007bff;
     color: white;
     cursor: pointer;
-    margin-top: 10px; /* Отступ сверху */
-    transition: background-color 0.3s ease; /* Плавный переход при наведении */
+    transition: background-color 0.3s ease;
 }
 
 #settingsPanel button:hover {
     background-color: #0056b3;
-}
-
-/* Контейнер для канваса */
-#canvasContainer {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden; /* Убираем скроллбары, если содержимое канваса выходит за пределы */
-}
-
-canvas {
-    border: 2px solid #333;
-    border-radius: 10px;
-}
-
-/* Отображение координат */
-#coordinates {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 5px;
-    font-size: 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Плавный переход при наведении */
-}
-
-#coordinates:hover {
-    background-color: rgba(0, 0, 0, 0.7);
 }
 
 /* Кнопки JSON */
@@ -92,7 +63,7 @@ canvas {
     justify-content: center;
     width: 40px;
     height: 40px;
-    transition: background-color 0.3s ease; /* Плавный переход при наведении */
+    transition: background-color 0.3s ease;
 }
 
 #jsonButtons button img {
@@ -103,4 +74,97 @@ canvas {
 
 #jsonButtons button:hover {
     background-color: #0056b3;
+}
+
+/* Превью цвета */
+#colorPreview {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Контейнер для канваса */
+#canvasContainer {
+    flex-grow: 1; /* Заполняет оставшееся пространство */
+    position: relative;
+    overflow: hidden; /* Убираем лишние скроллы */
+    background-color: #ffffff; /* Фон для области канваса */
+    display: flex;
+    justify-content: center; /* Центровка канваса по горизонтали */
+    align-items: center; /* Центровка канваса по вертикали */
+}
+
+/* Канвас */
+canvas {
+    display: block; /* Убирает внутренние отступы и отступы по умолчанию */
+    width: 100%; /* Растягиваем канвас по ширине контейнера */
+    height: 100%; /* Растягиваем канвас по высоте контейнера */
+    border: 2px solid #333; /* Тонкая чёрная граница */
+    border-radius: 10px; /* Закругляем углы */
+    box-sizing: border-box; /* Учитываем границы */
+}
+
+/* Отображение координат */
+#coordinates {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+    color: white;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#coordinates:hover {
+    background-color: rgba(0, 0, 0, 0.7); /* Более тёмный фон при наведении */
+}
+
+/* Скролл в панели настроек */
+#settingsPanel {
+    scrollbar-width: thin; /* Тонкий скролл для Firefox */
+    scrollbar-color: #007bff #f9f9f9; /* Цвет скролла и фона */
+}
+
+#settingsPanel::-webkit-scrollbar {
+    width: 8px; /* Ширина скроллбара */
+}
+
+#settingsPanel::-webkit-scrollbar-track {
+    background: #f9f9f9; /* Фон скроллбара */
+}
+
+#settingsPanel::-webkit-scrollbar-thumb {
+    background-color: #007bff; /* Цвет ползунка */
+    border-radius: 4px;
+}
+
+#settingsPanel::-webkit-scrollbar-thumb:hover {
+    background-color: #0056b3; /* Цвет ползунка при наведении */
+}
+
+/* Состояние активной кнопки (если требуется индикация) */
+button.active {
+    background-color: #0056b3;
+    color: #ffffff;
+}
+
+/* Анимация для визуального акцента */
+@keyframes buttonPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+    }
+}
+
+button.pulse {
+    animation: buttonPulse 1.5s infinite;
 }
