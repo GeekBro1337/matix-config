@@ -45,6 +45,8 @@
 
         <!-- Ластик -->
         <button id="toggleEraserButton">Enable Eraser</button>
+<!-- Добавьте эту кнопку в панель настроек после кнопки ластика -->
+<button id="toggleFillModeButton">Enable Fill Mode</button>
 
         <!-- Выбор цвета ячейки -->
         <label for="colorPicker">Cell Color:</label>
@@ -56,6 +58,14 @@
         <!-- Переключение режимов -->
         <button id="toggleModeButton">Switch to Paint Mode</button>
         <button id="toggleAutoCopyButton">Enable Auto Copy Mode</button>
+
+        <!-- Элементы управления зумом -->
+        <label>Zoom:</label>
+        <div id="zoomControls" style="display: flex; gap: 10px;">
+            <button id="zoomInButton">+</button>
+            <button id="zoomOutButton">-</button>
+            <span id="zoomLevelDisplay">100%</span>
+        </div>
     </div>
 
     <!-- Контейнер для канваса -->

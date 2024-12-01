@@ -1,4 +1,4 @@
-/* Сброс стилей для body */
+/* Основные стили для страницы */
 body {
     margin: 0;
     padding: 0;
@@ -18,8 +18,8 @@ body {
     flex-direction: column;
     gap: 15px;
     height: 100%; /* Полная высота окна браузера */
-    box-sizing: border-box; /* Учитываем padding в высоте */
-    overflow-y: auto; /* Скролл, если контент выходит за пределы */
+    box-sizing: border-box; /* Учитываем padding в расчёте ширины и высоты */
+    overflow-y: auto; /* Добавляем скролл, если контент превышает высоту панели */
 }
 
 /* Заголовки и текстовые метки */
@@ -28,7 +28,7 @@ body {
     margin-bottom: 5px;
 }
 
-/* Поля ввода */
+/* Поля ввода и кнопки */
 #settingsPanel input,
 #settingsPanel button {
     width: 100%;
@@ -36,7 +36,7 @@ body {
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Для точного расчёта размеров */
 }
 
 /* Кнопки */
@@ -93,6 +93,11 @@ body {
     display: flex;
     justify-content: center; /* Центровка канваса по горизонтали */
     align-items: center; /* Центровка канваса по вертикали */
+    cursor: grab; /* Курсор для перетаскивания */
+}
+
+#canvasContainer:active {
+    cursor: grabbing; /* Курсор для активного перетаскивания */
 }
 
 /* Канвас */
@@ -126,7 +131,7 @@ canvas {
 /* Скролл в панели настроек */
 #settingsPanel {
     scrollbar-width: thin; /* Тонкий скролл для Firefox */
-    scrollbar-color: #007bff #f9f9f9; /* Цвет скролла и фона */
+    scrollbar-color: #007bff #f9f9f9; /* Цвет скроллбара и фона */
 }
 
 #settingsPanel::-webkit-scrollbar {
@@ -146,25 +151,35 @@ canvas {
     background-color: #0056b3; /* Цвет ползунка при наведении */
 }
 
-/* Состояние активной кнопки (если требуется индикация) */
-button.active {
+/* Элементы управления зумом */
+#zoomControls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#zoomControls button {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#zoomControls button:hover {
     background-color: #0056b3;
-    color: #ffffff;
 }
 
-/* Анимация для визуального акцента */
-@keyframes buttonPulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
-    }
-}
-
-button.pulse {
-    animation: buttonPulse 1.5s infinite;
+#zoomLevelDisplay {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
 }
