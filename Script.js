@@ -42,6 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Настройка превью цвета
     const colorPicker = document.getElementById("colorPicker");
     const colorPreview = document.getElementById("colorPreview");
+    const colorPickerButton = document.getElementById("colorPickerButton");
+
+    colorPickerButton.addEventListener("click", () => {
+        colorPicker.click();
+    });
 
     colorPicker.addEventListener("input", () => {
         colorPreview.style.backgroundColor = colorPicker.value;
@@ -56,12 +61,9 @@ function resizeCanvas() {
     const parent = canvas.parentElement;
     const rect = parent.getBoundingClientRect();
 
-    // Учитываем devicePixelRatio при установке размеров канваса
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
-
-    // Настраиваем масштабирование контекста
-    ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+    // Устанавливаем размеры канваса в соответствии с размером контейнера
+    canvas.width = rect.width;
+    canvas.height = rect.height;
 
     drawCanvas(); // Перерисовываем канвас после изменения размера
 }
@@ -103,8 +105,8 @@ function handleImageUpload(event) {
 
 // Масштабирует изображение, чтобы оно поместилось на канвас
 function scaleImageToCanvas(img) {
-    const canvasWidth = canvas.width / window.devicePixelRatio;
-    const canvasHeight = canvas.height / window.devicePixelRatio;
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
 
     const canvasRatio = canvasWidth / canvasHeight;
     const imageRatio = img.width / img.height;
@@ -270,7 +272,10 @@ function drawMatrix() {
     matrixPoints = calculateMatrixPoints(topLeft, bottomRight, rows, cols);
 
     // Инициализируем cellStates
-    cellStates = Array(rows).fill(null).map(() => Array(cols).fill(null));
+    cellStates = [];
+    for (let i = 0; i < rows; i++) {
+        cellStates[i] = new Array(cols).fill(null);
+    }
 
     drawCanvas();
 }
@@ -478,15 +483,18 @@ function floodFill(row, col, targetColor, newColor) {
 // Возвращает позицию мыши с учётом масштаба и смещения
 function getMousePos(event) {
     const rect = canvas.getBoundingClientRect();
-    const scaleX = (canvas.width / window.devicePixelRatio) / rect.width;
-    const scaleY = (canvas.height / window.devicePixelRatio) / rect.height;
 
-    const x = (event.clientX - rect.left) * scaleX - canvasOffset.x;
-    const y = (event.clientY - rect.top) * scaleY - canvasOffset.y;
+    // Координаты мыши относительно канваса
+    const x = (event.clientX - rect.left);
+    const y = (event.clientY - rect.top);
+
+    // Учитываем зум и смещение
+    const transformedX = (x - canvasOffset.x) / zoomLevel;
+    const transformedY = (y - canvasOffset.y) / zoomLevel;
 
     return {
-        x: x / zoomLevel,
-        y: y / zoomLevel
+        x: transformedX,
+        y: transformedY
     };
 }
 
