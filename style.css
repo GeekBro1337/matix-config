@@ -45,6 +45,7 @@ body {
     color: white;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-align: center;
 }
 
 #settingsPanel button:hover {
@@ -103,8 +104,7 @@ body {
 /* Канвас */
 canvas {
     display: block; /* Убирает внутренние отступы и отступы по умолчанию */
-    width: 100%; /* Растягиваем канвас по ширине контейнера */
-    height: 100%; /* Растягиваем канвас по высоте контейнера */
+
     border: 2px solid #333; /* Тонкая чёрная граница */
     border-radius: 10px; /* Закругляем углы */
     box-sizing: border-box; /* Учитываем границы */
